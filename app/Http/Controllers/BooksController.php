@@ -30,8 +30,8 @@ class BooksController extends Controller
      */
     public function store(BooksRequest $request)
     {
-        $validated= $request->validated();
-       
+        $validated = $request->validated();
+
         Books::create($validated);
         return redirect()->route('books.index')->with('success', 'Libro aggiunto con successo!');
     }
@@ -41,31 +41,41 @@ class BooksController extends Controller
      */
     public function show(Books $books)
     {
-        //
+        return view('books.show', compact('books'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Books $books)
+    public function edit(Books $books, $id)
     {
-        //
+        $books = Books::find($id);
+        return view('books.edit', compact('books'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Books $books)
+    public function update(BooksRequest $request, Books $books, $id)
     {
-        //
+        $validated = $request->validated();
+
+        $books::find($id)->update([
+            'title' => $validated['title'],
+            'genre' => $validated['genre'],
+            'description' => $validated['description'],
+            'published' => $validated['published']
+        ]);
+
+        return redirect()->route('books.index')->with('success', 'Libro aggiornato con successo!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Books $books,$id)
+    public function destroy(Books $books, $id)
     {
-        
+
         $books->find($id)->destroy($id);
         return redirect()->route('books.index')->with('success', 'Libro eliminato con successo!');
     }
