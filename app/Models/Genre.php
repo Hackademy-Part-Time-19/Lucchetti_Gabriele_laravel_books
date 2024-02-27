@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Book;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class books extends Model
+class Genre extends Model
 {
     use HasFactory;
 
-    protected $fillable= ['title', 'description','genre','published'];
+    public function books(){
+        return $this->belongsToMany(Book::class);
+    }
 }

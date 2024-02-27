@@ -1,11 +1,9 @@
 <x-layout>
     <div class="container" style="margin-top:50px">
-        @auth
-            <h3>{{ auth()->user()->name }} ecco i libri presenti in libreria</h3>
-        @endauth
-        @guest
-            <h3>Benvenuto, ecco i libri presenti in libreria</h3>
-        @endguest
+       
+        <h3>{{ auth()->user()->name }} ecco i tuoi libri</h3>
+        
+        
         <x-success />
         <x-denied />
 
@@ -17,9 +15,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ $book['title'] }}</h5>
                             <h6 class="card-subtitle mb-2 text-body-secondary">{{ $book['published'] }}</h6>
-                            @foreach($book->genres as $genre)
-                            <h6 class="btn btn-secondary">{{ $genre->name }}</h6>
-                            @endforeach
+                            <h6 class="btn btn-secondary">{{ $book->genres }}</h6>
                             <p class="card-text">{{ $book['description'] }}</p>
                             <p class="card-text">Aggiunto da: {{ $book->user->name }}</p>
                             <a href="#" class="card-link">Dettaglio</a>

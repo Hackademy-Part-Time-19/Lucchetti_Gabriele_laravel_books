@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Books;
-use Illuminate\Support\Facades\View;
+use App\Models\Book;
+use App\Models\Genre;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        view::share('books', Books::all());
+       view::share('books', Book::all());
+
+       view::share('genres', Genre::all());
     }
 }

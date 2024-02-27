@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\UserControllerPage;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,5 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 
-Route::resource('books', BooksController::class);
+Route::resource('books', BooksController::class)->except(['books.create', 'books.edit']);
 
+Route::middleware('auth')->group(function(){
+    Route::resource('books', BooksController::class)->only(['books.create', 'books.edit']);
+});
+Route::get('/user/books', [UserControllerPage::class, 'index'])->name('user.books');
+Route::get('/user/home', [UserControllerPage::class, 'auth'])->name('home.user');

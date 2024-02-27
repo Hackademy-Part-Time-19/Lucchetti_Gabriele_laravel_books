@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\booksRequest;
-use App\Models\Books;
+use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
+use App\Http\Requests\booksRequest;
 
 class BooksController extends Controller
 {
@@ -13,7 +14,7 @@ class BooksController extends Controller
      */
     public function index()
     {
-        $books = Books::all();
+        $books = Book::all();
         return view('books.index', compact('books'));
     }
 
@@ -22,7 +23,8 @@ class BooksController extends Controller
      */
     public function create()
     {
-        return view('books.create');
+        $genres=Genre::all();
+        return view('books.create', compact('genres'));
     }
 
     /**
@@ -30,16 +32,24 @@ class BooksController extends Controller
      */
     public function store(BooksRequest $request)
     {
+        
         $validated = $request->validated();
-
-        Books::create($validated);
+        
+        $book=Book::create([
+            'title' => $validated['title'],
+            
+            'description' => $validated['description'],
+            'published' => $validated['published'],
+            'user_id' => auth()->user()->id,
+        ]);
+        $book->genres()->attach($validated['genres']);
         return redirect()->route('books.index')->with('success', 'Libro aggiunto con successo!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Books $books)
+    public function show(Book $books)
     {
         return view('books.show', compact('books'));
     }
@@ -47,33 +57,40 @@ class BooksController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Books $books, $id)
+    public function edit(Book $books, $id)
     {
-        $books = Books::find($id);
-        return view('books.edit', compact('books'));
+        $book = Book::find($id);
+        if (auth()->user()->id == $book->user->id) {
+
+            return view('books.edit', compact('book'));
+        }
+
+        return redirect()->back()->with('denied', 'Non hai il permesso per modificare questo libro');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(BooksRequest $request, Books $books, $id)
+    public function update(BooksRequest $request, Book $book)
     {
         $validated = $request->validated();
 
-        $books::find($id)->update([
+        $book->update([
             'title' => $validated['title'],
             'genre' => $validated['genre'],
             'description' => $validated['description'],
             'published' => $validated['published']
         ]);
-
+        if (auth()->user() != null) {
+            return redirect()->route('user.books')->with('success', 'Libro aggiornato con successo!');
+        }
         return redirect()->route('books.index')->with('success', 'Libro aggiornato con successo!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Books $books, $id)
+    public function destroy(Book $books, $id)
     {
 
         $books->find($id)->destroy($id);

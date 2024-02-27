@@ -26,7 +26,9 @@
                     <li class="nav-item">
                         <a class="nav-link " href='{{route('books.create')}}'>Pubblica Libro</a>
                     </li>
-                    
+                    <li class="nav-item">
+                        <a class="nav-link " href='{{route('user.books')}}'>I tuoi libri</a>
+                    </li>
                     <li class="nav-item">
                         <form action="/logout" method="POST">
                             @csrf
